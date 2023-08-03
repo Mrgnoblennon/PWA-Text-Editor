@@ -12,36 +12,47 @@ const initdb = async () =>
     },
   });
 
-// Add content to the database
-const putDb = async (content) => {
-  try {
-    const db = await initdb();
-    const tx = db.transaction('jate', 'readwrite'); // Start a read-write transaction
-    const store = tx.objectStore('jate'); // Access the object store
-    await store.add({ content }); // Add the content to the object store
-    await tx.done; // Complete the transaction
-    console.log('Data added to database:', content);
-  } catch (error) {
-    console.error('putDb error:', error);
-  }
-};
-
-// Retrieve all content from the database
-const getDb = async () => {
-  try {
-    const db = await initdb();
-    const tx = db.transaction('jate', 'readonly'); // Start a read-only transaction
-    const store = tx.objectStore('jate'); // Access the object store
-    const data = await store.getAll(); // Get all data from the object store
-    await tx.done; // Complete the transaction
-    console.log('Data retrieved from database:', data);
-    return data.map(item => item.content).join('\n'); // Extract and join content
-  } catch (error) {
-    console.error('getDb error:', error);
-    return null;
-  }
-};
-
-initdb();
-
-export { putDb, getDb };
+  export const putDb = async (content)  => {
+    console.log('PUT to the database');
+  
+    // Create a connection to the database database and version we want to use.
+    const contactDb = await openDB('jate', 1);
+  
+    // Create a new transaction and specify the database and data privileges.
+    const tx = contactDb.transaction('jate', 'readwrite');
+  
+    // Open up the desired object store.
+    const store = tx.objectStore('jate');
+  
+    // Use the .add() method on the store and pass in the content.
+    const request = store.put({ id: 1, value: content });
+  
+    // Get confirmation of the request.
+    const result = await request;
+    console.log('🚀 - data saved to the database', result);
+  };
+  
+  // TODO: Add logic for a method that gets all the content from the database
+  export const getDb = async () => {
+    console.log('GET from the database');
+  
+    // Create a connection to the database database and version we want to use.
+    const contactDb = await openDB('jate', 1);
+  
+    // Create a new transaction and specify the database and data privileges.
+    const tx = contactDb.transaction('jate', 'readonly');
+  
+    // Open up the desired object store.
+    const store = tx.objectStore('jate');
+  
+    // Use the .getAll() method to get all data in the database.
+    const request = store.getAll();
+  
+    // Get confirmation of the request.
+    const result = await request;
+    console.log('result.value', result);
+    return result?.value;
+  };
+  
+  
+  initdb();
