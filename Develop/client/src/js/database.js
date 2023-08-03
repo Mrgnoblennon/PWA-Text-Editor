@@ -29,7 +29,7 @@ const initdb = async () =>
   
     // Get confirmation of the request.
     const result = await request;
-    console.log('🚀 - data saved to the database', result);
+    console.log('Data saved to the database', result);
   };
   
   // TODO: Add logic for a method that gets all the content from the database
